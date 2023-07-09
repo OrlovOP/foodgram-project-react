@@ -112,7 +112,6 @@ class RecipeViewSet(ModelViewSet):
             return RecipeGetSerializer
         return RecipePostSerializer
 
-
     @decorators.action(
         detail=True,
         methods=['post', 'delete'],
