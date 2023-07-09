@@ -1,5 +1,6 @@
 from django.db.models import Sum
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404, HttpResponse
 from djoser.views import UserViewSet
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -81,8 +82,9 @@ class IngredientViewSet(ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny, )
-    filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend, SearchFilter,)
     filterset_class = IngredientFilter
+    search_fields = ('^name',)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -90,7 +92,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AllowAny,)
     pagination_class = None
 
 
@@ -100,7 +102,7 @@ class RecipeViewSet(ModelViewSet):
        Выгрузка списка покупок.'''
 
     queryset = Recipe.objects.all()
-    permission_classes = (AuthorOrReadOnly, )
+    permission_classes = (AuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     http_method_names = ['get', 'post', 'patch', 'delete']
@@ -109,6 +111,7 @@ class RecipeViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RecipeGetSerializer
         return RecipePostSerializer
+
 
     @decorators.action(
         detail=True,

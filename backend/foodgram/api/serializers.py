@@ -158,7 +158,7 @@ class RecipeGetSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = UsersSerializer(read_only=True)
     ingredients = IngredientGetSerializer(many=True, read_only=True,
-                                          source='recipeingredients')
+                                          source='ingredient_list')
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField(required=False)
@@ -188,12 +188,9 @@ class RecipePostSerializer(serializers.ModelSerializer):
     '''Сериализатор для добаления или обновления рецептов.'''
 
     ingredients = IngredientPostSerializer(
-        many=True, source='recipeingredients'
-    )
+        many=True, source='recipeingredients')
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True
-    )
+        queryset=Tag.objects.all(), many=True)
     image = Base64ImageField()
 
     class Meta:
