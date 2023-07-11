@@ -3,6 +3,7 @@ from recipes.models import Recipe, Ingredient
 from users.models import User
 
 
+# fmt: off
 class RecipeFilter(FilterSet):
     '''Фильтр для рецептов.'''
 

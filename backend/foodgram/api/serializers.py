@@ -2,10 +2,19 @@ from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, exceptions, status
 from rest_framework.validators import UniqueTogetherValidator
-from recipes.models import (Tag, Ingredient, Recipe, Favorite,
-                            RecipeIngredient, Cart)
+from recipes.models import (
+    Tag,
+    Ingredient,
+    Recipe,
+    Favorite,
+    RecipeIngredient,
+    Cart,
+)
 from users.models import User, Follow
+from users.serializers import UsersSerializer
 from .utils import create_ingredients
+
+# fmt: off
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
@@ -15,40 +24,6 @@ class RecipeShortSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
         read_only_fields = ('__all__',)
-
-# ------------- Сериализаторы для приложения Users---------------------
-
-
-class UsersSerializer(serializers.ModelSerializer):
-    '''Cериализатор для управления пользователями.'''
-
-    is_subscribed = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'is_subscribed',)
-        extra_kwargs = {'password': {'write_only': True}}
-        read_only_fields = ('is_subscribed',)
-
-    def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-
-    def get_is_subscribed(self, obj):
-        '''Проверка на подписку.'''
-
-        request = self.context.get('request')
-        return (request.user.is_authenticated
-                and Follow.objects.filter(user=request.user, author=obj)
-                .exists())
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -106,8 +81,6 @@ class FollowSerializer(serializers.ModelSerializer):
                 code=status.HTTP_400_BAD_REQUEST
             )
         return data
-
-# -------------- Сериализаторы для API ---------------------------------
 
 
 class TagSerializer(serializers.ModelSerializer):

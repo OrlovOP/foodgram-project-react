@@ -20,11 +20,6 @@ class Command(BaseCommand):
                 encoding='utf-8'
             ) as f:
                 reader = csv.DictReader(f, delimiter=',')
-                # for row in reader:
-                #     name, measurement_unit = row
-                #     Ingredient.objects.get_or_create(
-                #         name=name, measurement_unit=measurement_unit
-                #     )
                 for row in reader:
                     name, measurement_unit = row
                     ingredient = Ingredient(name=name,

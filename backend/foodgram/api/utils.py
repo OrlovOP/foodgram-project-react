@@ -6,25 +6,7 @@ from django.shortcuts import get_object_or_404, HttpResponse
 from recipes.models import Recipe, RecipeIngredient, Ingredient
 
 
-def create_delete(var_serializer, model, request, recipe_id):
-    '''Опция добавления или удаления рецепта.'''
-
-    user = request.user
-    data = {'user': user.id,
-            'recipe': recipe_id}
-    serializer = var_serializer(data=data, context={'request': request})
-    if request.method == 'POST':
-        serializer.is_valid()
-        serializer.save()
-        return response.Response(serializer.data,
-                                 status=status.HTTP_201_CREATED)
-    if request.method == 'DELETE':
-        get_object_or_404(
-            model, user=user, recipe=get_object_or_404(Recipe, id=recipe_id)
-        ).delete()
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
-
-
+# fmt: off
 @receiver(post_delete, sender=Recipe)
 def delete_image(sender, instance, *a, **kw):
     '''Удаяем рецепт - удаляем картинку.'''
