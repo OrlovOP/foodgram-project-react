@@ -12,7 +12,8 @@ services:
       - pg_data:/var/lib/postgresql/data
     restart: no
   backend:
-    build: ../backend
+    # build: ../backend
+    image: orlovop/foodgram_backend
     env_file: ../.env
     volumes:
       - static:/app/static
@@ -21,9 +22,10 @@ services:
       - db
     restart: no
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ../frontend
+    #   dockerfile: Dockerfile
+    image: orlovop/foodgram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       - ../frontend/:/app/result_build/
