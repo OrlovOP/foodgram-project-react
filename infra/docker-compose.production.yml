@@ -25,10 +25,8 @@ services:
   frontend:
     container_name: frontend
     image: orlovop/foodgram_frontend
-    command: cp -r /app/build/. /static/
     volumes:
       - ../frontend/:/app/result_build/
-      - static:/static
     depends_on:
       - backend
   nginx:
